@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Interaktif - Observasi Trigonometri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            .no-print { display: none; }
+            body { background: white; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; margin: 0; padding: 0; }
+        }
+        input[type="text"], textarea {
+            border-bottom: 2px dashed #3b82f6;
+            background: transparent;
+            width: 100%;
+            padding: 4px;
+        }
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-bottom: 2px solid #1d4ed8;
+            background: #f0f9ff;
+        }
+        .checkbox-custom {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 py-10 px-4 font-sans text-slate-800">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden container">
+        <!-- Header -->
+        <div class="bg-blue-600 p-8 text-white text-center">
+            <h1 class="text-3xl font-bold uppercase tracking-wide">Lembar Kerja Peserta Didik (LKPD)</h1>
+            <p class="text-xl mt-2 opacity-90">Observasi Perbandingan Tinggi Objek dan Bayangan</p>
+        </div>
+
+        <div class="p-8 space-y-8">
+            <!-- A. Identitas -->
+            <section>
+                <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">A. Identitas Peserta</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex items-center gap-2">
+                        <label class="font-semibold whitespace-nowrap">Nama:</label>
+                        <input type="text" placeholder="Masukkan nama lengkap">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="font-semibold whitespace-nowrap">Program:</label>
+                        <input type="text" placeholder="Nama PKBM">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="font-semibold whitespace-nowrap">Tanggal:</label>
+                        <input type="text" placeholder="Hari, Tanggal">
+                    </div>
+                </div>
+            </section>
+
+            <!-- B. Tujuan -->
+            <section class="bg-blue-50 p-4 rounded-lg">
+                <h2 class="text-lg font-bold text-blue-800 mb-2">B. Tujuan Kegiatan</h2>
+                <p>Peserta didik mampu memahami konsep perbandingan senilai dan kesebangunan melalui pengukuran berbagai objek bebas dan bayangannya di lingkungan nyata.</p>
+            </section>
+
+            <!-- C. Petunjuk -->
+            <section>
+                <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">C. Petunjuk Kegiatan</h2>
+                <ol class="list-decimal ml-6 space-y-1">
+                    <li>Pilihlah 3 objek berbeda di sekitar Anda (misal: tongkat, pohon, kursi, atau tinggi badan).</li>
+                    <li>Ukur tinggi benda asli dan panjang bayangannya pada waktu yang bersamaan.</li>
+                    <li>Catat nama objek dan hasil pengukuran pada tabel di bawah ini.</li>
+                </ol>
+            </section>
+
+            <!-- D. Tabel -->
+            <section>
+                <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">D. Tabel Hasil Pengamatan</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-slate-300">
+                        <thead class="bg-slate-200">
+                            <tr>
+                                <th class="border border-slate-300 p-3 text-center w-12">No</th>
+                                <th class="border border-slate-300 p-3 text-left">Nama Objek</th>
+                                <th class="border border-slate-300 p-3 text-center">Tinggi Objek (cm)</th>
+                                <th class="border border-slate-300 p-3 text-center">Panjang Bayangan (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-slate-300 p-3 text-center">1</td>
+                                <td class="border border-slate-300 p-2"><input type="text" placeholder="Misal: Tongkat"></td>
+                                <td class="border border-slate-300 p-2"><input type="text" class="text-center" placeholder="cm"></td>
+                                <td class="border border-slate-300 p-2"><input type="text" class="text-center" placeholder="cm"></td>
+                            </tr>
+                            <tr>
+                                <td class="border border-slate-300 p-3 text-center">2</td>
+                                <td class="border border-slate-300 p-2"><input type="text" placeholder="Misal: Kursi"></td>
+                                <td class="border border-slate-300 p-2"><input type="text" class="text-center" placeholder="cm"></td>
+                                <td class="border border-slate-300 p-2"><input type="text" class="text-center" placeholder="cm"></td>
+                            </tr>
+                            <tr>
+                                <td class="border border-slate-300 p-3 text-center">3</td>
+                                <td class="border border-slate-300 p-2"><input type="text" placeholder="Misal: Pohon"></td>
+                                <td class="border border-slate-300 p-2"><input type="text" class="text-center" placeholder="cm"></td>
+                                <td class="border border-slate-300 p-2"><input type="text" class="text-center" placeholder="cm"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- E. Analisis -->
+            <section>
+                <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">E. Analisis Data</h2>
+                <div class="space-y-6">
+                    <div>
+                        <p class="font-semibold mb-2">1. Hitung nilai perbandingan (Tinggi / Bayangan) untuk setiap objek:</p>
+                        <ul class="space-y-2 ml-4">
+                            <li class="flex items-center gap-2">
+                                - Objek 1 = <input type="text" class="w-48 text-center" placeholder="Hasil bagi">
+                            </li>
+                            <li class="flex items-center gap-2">
+                                - Objek 2 = <input type="text" class="w-48 text-center" placeholder="Hasil bagi">
+                            </li>
+                            <li class="flex items-center gap-2">
+                                - Objek 3 = <input type="text" class="w-48 text-center" placeholder="Hasil bagi">
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold mb-2">2. Apakah nilai perbandingan ketiga objek di atas mendekati angka yang sama? Jelaskan alasannya!</p>
+                        <textarea rows="3" placeholder="Tulis penjelasan kamu..."></textarea>
+                    </div>
+
+                    <div>
+                        <p class="font-semibold mb-2">3. Konsep matematika apa yang kamu temukan dari hubungan tinggi dan bayangan ini?</p>
+                        <textarea rows="3" placeholder="Misal: Kesebangunan, Tangen, dll."></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- F. Kesimpulan -->
+            <section>
+                <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">F. Kesimpulan</h2>
+                <textarea rows="4" placeholder="Tulis kesimpulan akhir dari kegiatan observasi ini..."></textarea>
+            </section>
+
+            <!-- G. Refleksi -->
+            <section>
+                <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">G. Refleksi</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse border border-slate-300">
+                        <thead class="bg-slate-200">
+                            <tr>
+                                <th class="border border-slate-300 p-3 text-left">Pernyataan</th>
+                                <th class="border border-slate-300 p-3 text-center w-24">Ya</th>
+                                <th class="border border-slate-300 p-3 text-center w-24">Tidak</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-slate-300 p-3">Saya memahami konsep perbandingan objek</td>
+                                <td class="border border-slate-300 p-3 text-center"><input type="radio" name="ref1" class="checkbox-custom"></td>
+                                <td class="border border-slate-300 p-3 text-center"><input type="radio" name="ref1" class="checkbox-custom"></td>
+                            </tr>
+                            <tr>
+                                <td class="border border-slate-300 p-3">Saya dapat menghubungkan matematika dengan objek di sekitar saya</td>
+                                <td class="border border-slate-300 p-3 text-center"><input type="radio" name="ref2" class="checkbox-custom"></td>
+                                <td class="border border-slate-300 p-3 text-center"><input type="radio" name="ref2" class="checkbox-custom"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer / Action -->
+        <div class="bg-slate-50 p-8 border-t border-slate-200 text-center no-print">
+            <button type="button" onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-12 rounded-full transition duration-300 shadow-lg transform hover:scale-105">
+                Cetak Hasil Kerja / Simpan Ke PDF
+            </button>
+            <p class="text-sm text-slate-500 mt-4 italic">Isi data di atas, lalu klik tombol untuk menyimpan sebagai PDF.</p>
+        </div>
+    </div>
+
+    <footer class="mt-8 text-center text-slate-400 text-sm no-print">
+        &copy; 2024 LKPD Digital - PKBM Interaktif
+    </footer>
+
+</body>
+</html>
