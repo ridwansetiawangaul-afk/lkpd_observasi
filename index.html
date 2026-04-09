@@ -3,190 +3,412 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LKPD Observasi Tinggi & Bayangan</title>
+    <title>LKPD Interaktif: Eksperimen Bayangan Matahari</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <style>
-        /* Gaya khusus untuk tampilan cetak PDF */
-        @media print { 
-            .no-print { display: none; } 
-            body { background: white; } 
-            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; margin: 0; padding: 0; } 
+        .experiment-zone {
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F2F1 70%, #4CAF50 70%, #388E3C 100%);
+            position: relative;
+            overflow: hidden;
         }
-        
-        /* Input dengan garis bawah ala lembar kerja fisik */
-        input[type="text"], textarea { 
-            border-bottom: 2px dashed #3b82f6; 
-            background: transparent; 
-            width: 100%; 
-            padding: 4px; 
+        .ai-guide-card {
+            border-left: 4px solid #6366f1;
         }
-        input[type="text"]:focus, textarea:focus { 
-            outline: none; 
-            border-bottom: 2px solid #1d4ed8; 
-            background: #f0f9ff; 
+        #success-message {
+            display: none;
         }
-
-        /* Animasi Loading */
-        .loading-spinner { 
-            display: none; 
-            border: 3px solid #f3f3f3; 
-            border-top: 3px solid #ffffff; 
-            border-radius: 50%; 
-            width: 20px; 
-            height: 20px; 
-            animation: spin 1s linear infinite; 
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
     </style>
 </head>
-<body class="bg-slate-100 py-10 px-4 font-sans text-slate-800">
+<body class="bg-slate-50 min-h-screen font-sans text-slate-800">
 
-    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-xl overflow-hidden container">
-        <form id="lkpdForm">
-            <!-- Bagian Header -->
-            <div class="bg-blue-700 p-8 text-white text-center">
-                <h1 class="text-2xl font-bold uppercase tracking-wide">Lembar Kerja Peserta Didik (LKPD)</h1>
-                <p class="text-lg mt-2 opacity-90">Observasi Perbandingan Tinggi Badan dan Bayangan</p>
+    <!-- Header -->
+    <header class="bg-blue-600 text-white py-6 px-4 shadow-md">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold">Praktik Outdoor: Bayangan Matahari</h1>
+                <p class="text-blue-100 italic text-sm">Simulasi Eksperimen Kesebangunan di Taman (Kirim ke Sheets)</p>
             </div>
+            <div class="flex gap-2 text-xs">
+                <span class="bg-blue-500 px-3 py-1 rounded-full border border-blue-400">Math Class</span>
+                <span class="bg-blue-500 px-3 py-1 rounded-full border border-blue-400">Outdoor Lab</span>
+            </div>
+        </div>
+    </header>
 
-            <div class="p-8 space-y-8">
-                <!-- A. Identitas Peserta -->
-                <section>
-                    <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">A. Identitas Peserta</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="flex items-center gap-2">
-                            <label class="font-semibold whitespace-nowrap">Nama:</label>
-                            <input type="text" name="nama" required placeholder="Nama Lengkap">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <label class="font-semibold whitespace-nowrap">Program:</label>
-                            <input type="text" name="program" placeholder="PKBM / Sekolah">
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <label class="font-semibold whitespace-nowrap">Tanggal:</label>
-                            <input type="text" name="tanggal" placeholder="Hari, Tanggal">
-                        </div>
-                    </div>
-                </section>
+    <main class="max-w-6xl mx-auto p-4 md:p-8 space-y-8">
+        
+        <!-- Bagian Identitas Siswa -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center">
+                <i class="fas fa-user-graduate mr-2 text-blue-600"></i> Identitas Siswa
+            </h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Nama Lengkap</label>
+                    <input type="text" id="student-name" class="w-full border rounded-xl p-3 bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Masukkan nama Anda">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Kelas</label>
+                    <input type="text" id="student-class" class="w-full border rounded-xl p-3 bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Contoh: IX-A">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1 uppercase">Asal Sekolah</label>
+                    <input type="text" id="student-school" class="w-full border rounded-xl p-3 bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nama SMP/MTs">
+                </div>
+            </div>
+        </section>
 
-                <!-- D. Tabel Pengamatan -->
-                <section>
-                    <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">D. Tabel Hasil Pengamatan</h2>
-                    <div class="overflow-x-auto">
-                        <table class="w-full border-collapse border border-slate-300">
-                            <thead class="bg-slate-100">
-                                <tr>
-                                    <th class="border border-slate-300 p-3 text-center">No</th>
-                                    <th class="border border-slate-300 p-3 text-left">Jenis Subjek</th>
-                                    <th class="border border-slate-300 p-3 text-center">Tinggi Badan (cm)</th>
-                                    <th class="border border-slate-300 p-3 text-center">Panjang Bayangan (cm)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="border border-slate-300 p-3 text-center">1</td>
-                                    <td class="border border-slate-300 p-3 font-medium">Anak Kecil</td>
-                                    <td class="border border-slate-300 p-2"><input type="text" name="tb_anak" class="text-center"></td>
-                                    <td class="border border-slate-300 p-2"><input type="text" name="pb_anak" class="text-center"></td>
-                                </tr>
-                                <tr>
-                                    <td class="border border-slate-300 p-3 text-center">2</td>
-                                    <td class="border border-slate-300 p-3 font-medium">Remaja</td>
-                                    <td class="border border-slate-300 p-2"><input type="text" name="tb_remaja" class="text-center"></td>
-                                    <td class="border border-slate-300 p-2"><input type="text" name="pb_remaja" class="text-center"></td>
-                                </tr>
-                                <tr>
-                                    <td class="border border-slate-300 p-3 text-center">3</td>
-                                    <td class="border border-slate-300 p-3 font-medium">Orang Dewasa</td>
-                                    <td class="border border-slate-300 p-2"><input type="text" name="tb_dewasa" class="text-center"></td>
-                                    <td class="border border-slate-300 p-2"><input type="text" name="pb_dewasa" class="text-center"></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <!-- E. Analisis -->
-                <section>
-                    <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">E. Analisis Data</h2>
+        <!-- Bagian 1: Kontrol & Simulasi -->
+        <section class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1 space-y-4">
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-lg font-bold text-blue-700 mb-3 flex items-center">
+                        <i class="fas fa-sun mr-2"></i> Kontrol Simulator
+                    </h2>
+                    
                     <div class="space-y-6">
-                        <div>
-                            <p class="font-semibold mb-2">1. Hitung perbandingan tinggi badan dan bayangan (TB : PB):</p>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <input type="text" name="ratio_anak" placeholder="Ratio Anak Kecil">
-                                <input type="text" name="ratio_remaja" placeholder="Ratio Remaja">
-                                <input type="text" name="ratio_dewasa" placeholder="Ratio Dewasa">
-                            </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <label class="block text-xs font-semibold mb-2 text-slate-600 uppercase tracking-wider">Tinggi Tiang (h): <span id="height-val" class="text-red-600 text-lg font-bold">2.0</span> m</label>
+                            <input type="range" id="height-slider" min="0.5" max="5.0" step="0.1" value="2.0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-red-600">
                         </div>
-                        <div>
-                            <p class="font-semibold mb-2">2. Apakah perbandingan tersebut sama (senilai)? Jelaskan!</p>
-                            <textarea name="analisis_senilai" rows="2"></textarea>
-                        </div>
-                        <div>
-                            <p class="font-semibold mb-2">3. Apa hubungan antara tinggi badan dan panjang bayangan?</p>
-                            <textarea name="analisis_hubungan" rows="2"></textarea>
-                        </div>
-                        <div>
-                            <p class="font-semibold mb-2">4. Konsep matematika apa yang dapat kamu temukan?</p>
-                            <input type="text" name="konsep_mat">
+
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <label class="block text-xs font-semibold mb-2 text-slate-600 uppercase tracking-wider">Sudut Matahari (θ): <span id="angle-val" class="text-orange-500 text-lg font-bold">45</span>°</label>
+                            <input type="range" id="angle-slider" min="10" max="85" value="45" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500">
                         </div>
                     </div>
-                </section>
+                    
+                    <div class="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-100 flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] text-blue-400 font-bold uppercase">Data Real-time:</p>
+                            <p class="text-sm font-bold text-slate-700">Bayangan (s): <span id="shadow-len-val" class="text-blue-600 text-lg">2.00</span> m</p>
+                        </div>
+                        <button onclick="recordData()" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-md transition-all active:scale-95" title="Catat ke tabel">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
 
-                <!-- F. Kesimpulan -->
-                <section>
-                    <h2 class="text-xl font-bold text-blue-700 border-b-2 border-blue-100 pb-2 mb-4">F. Kesimpulan</h2>
-                    <textarea name="kesimpulan" rows="3" placeholder="Tulis kesimpulanmu di sini..."></textarea>
-                </section>
+                <div class="bg-indigo-900 text-white p-5 rounded-2xl shadow-xl border border-indigo-800">
+                    <h2 class="text-md font-bold mb-3 flex items-center">
+                        <i class="fas fa-comments mr-2 text-indigo-400"></i> Tugas Diskusi AI
+                    </h2>
+                    <p class="text-[11px] text-indigo-200 leading-relaxed">
+                        Gunakan data yang Anda catat untuk bertanya ke Chatbot: 
+                        <br><br>
+                        1. "Bagaimana perbandingan h/s pada sudut yang sama?"
+                        <br>
+                        2. "Apa rumus matematika untuk mencari s jika h dan θ diketahui?"
+                    </p>
+                </div>
             </div>
 
-            <!-- Tombol Aksi -->
-            <div class="bg-slate-50 p-8 border-t text-center no-print">
-                <p id="status" class="mb-4 font-bold text-sm"></p>
-                <div class="flex flex-col md:flex-row gap-4 justify-center">
-                    <button type="submit" id="submitBtn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-full flex items-center justify-center gap-2 transition shadow-lg">
-                        <span>Kirim ke Guru</span>
-                        <div id="spinner" class="loading-spinner"></div>
-                    </button>
-                    <button type="button" onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-full transition shadow-lg">
-                        Cetak / PDF
+            <!-- Simulator Visual -->
+            <div class="lg:col-span-2 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold text-slate-700 italic">"Simulasi Bayangan Taman"</h2>
+                    <div class="flex gap-2">
+                         <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold uppercase">h = <span id="stat-h">2.0</span>m</span>
+                         <span class="text-[10px] bg-orange-100 text-orange-700 px-2 py-1 rounded font-bold uppercase">θ = <span id="stat-theta">45</span>°</span>
+                    </div>
+                </div>
+                <div class="experiment-zone w-full rounded-xl overflow-hidden relative" style="height: 400px;">
+                    <div class="cloud w-16 h-8 top-10 left-10"></div>
+                    <div class="cloud w-20 h-10 top-20 left-64 opacity-60"></div>
+                    <div class="cloud w-24 h-12 top-10 right-20"></div>
+                    <canvas id="simCanvas" width="800" height="400" class="w-full h-full relative z-10"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bagian 2: Tabel Pengamatan & Form Kesimpulan -->
+        <section class="grid lg:grid-cols-1 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-700 mb-6 flex items-center">
+                    <i class="fas fa-table mr-2 text-blue-600"></i> Tabel Pengamatan Mandiri
+                </h2>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600">
+                                <th class="p-3 border text-center w-16">No</th>
+                                <th class="p-3 border text-center">Tinggi Tiang (h)</th>
+                                <th class="p-3 border text-center">Sudut Matahari (θ)</th>
+                                <th class="p-3 border text-center">Panjang Bayangan (s)</th>
+                                <th class="p-3 border text-center w-24">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table-body">
+                            <!-- Data dimasukkan via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 flex justify-end">
+                    <button onclick="clearTable()" class="text-xs text-red-500 hover:text-red-700 font-bold">
+                        <i class="fas fa-trash-alt mr-1"></i> Hapus Semua Data
                     </button>
                 </div>
             </div>
-        </form>
-    </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-700 mb-6 flex items-center">
+                    <i class="fas fa-pen-nib mr-2 text-blue-600"></i> Form Hasil Kesimpulan
+                </h2>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-2">1. Apa yang terjadi pada bayangan jika sudut matahari semakin besar?</label>
+                            <textarea id="q1" rows="3" class="w-full border rounded-xl p-3 bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tulis pengamatan Anda..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-2">2. Bagaimana hubungan tinggi tiang dengan bayangan pada sudut yang tetap?</label>
+                            <textarea id="q2" rows="3" class="w-full border rounded-xl p-3 bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Tulis pengamatan Anda..."></textarea>
+                        </div>
+                    </div>
+                    <div class="space-y-4 flex flex-col">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-600 mb-2">3. Ringkasan hasil diskusi dengan Chatbot AI:</label>
+                            <textarea id="ai-summary" rows="3" class="w-full border rounded-xl p-3 bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Apa rumus atau teori yang diberikan AI?"></textarea>
+                        </div>
+                        <div class="flex-1 bg-blue-50 p-4 rounded-xl border border-blue-100">
+                            <h3 class="font-bold text-blue-700 text-sm mb-2"><i class="fas fa-check-circle mr-1"></i> Kesimpulan Akhir</h3>
+                            <textarea id="final-conclusion" rows="4" class="w-full border rounded-xl p-3 bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Rumuskan kesimpulan umum Anda di sini..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="status-area" class="mt-8 flex flex-col items-center">
+                    <div id="success-message" class="bg-emerald-100 text-emerald-700 p-4 rounded-xl text-sm flex items-center justify-center mb-4 w-full md:w-1/2">
+                        <i class="fas fa-check-circle mr-2 text-xl"></i> 
+                        <div>
+                            <p class="font-bold">Jawaban Berhasil Terkirim ke Google Sheets!</p>
+                            <p class="text-xs">Data identitas dan pengamatan telah disimpan.</p>
+                        </div>
+                    </div>
+
+                    <button id="submit-btn" onclick="submitWork()" class="w-full md:w-1/2 bg-blue-700 hover:bg-blue-800 text-white py-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center">
+                        <i class="fas fa-paper-plane mr-2"></i> Kirim Semua Jawaban
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script>
-        // URL Google Apps Script Anda
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxLT9BllfcY9kYmnmM4zD6JOqCXLUkhHtcy7PaREWcjoyTncItnqX8eCjhjtgcbReOm/exec';
+        // URL Apps Script yang baru diperbarui
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwQRl8NoY1peCnOGK86m-U2OxFXJiVjwUYKg-qHtk1Eu1O3rBtDDxfV23WeaUtuUbAg/exec";
+
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        const angleSlider = document.getElementById('angle-slider');
+        const heightSlider = document.getElementById('height-slider');
         
-        const form = document.getElementById('lkpdForm');
-        const btn = document.getElementById('submitBtn');
-        const spinner = document.getElementById('spinner');
-        const status = document.getElementById('status');
+        const angleValDisplay = document.getElementById('angle-val');
+        const heightValDisplay = document.getElementById('height-val');
+        const shadowLenDisplay = document.getElementById('shadow-len-val');
+        const statH = document.getElementById('stat-h');
+        const statTheta = document.getElementById('stat-theta');
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
+        let trialData = [];
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            const hReal = parseFloat(heightSlider.value);
+            const angleDeg = parseInt(angleSlider.value);
+            const angleRad = (90 - angleDeg) * (Math.PI / 180);
+            
+            const startX = 200;
+            const groundY = 300; 
+            const visualScale = 50; 
+            const hPixels = hReal * visualScale;
+            
+            const shadowLength = hPixels * Math.tan(angleRad);
+            const gradient = ctx.createLinearGradient(startX, groundY, startX + shadowLength, groundY);
+            gradient.addColorStop(0, 'rgba(0, 30, 0, 0.6)');
+            gradient.addColorStop(1, 'rgba(0, 30, 0, 0.05)');
+            
+            ctx.beginPath();
+            ctx.fillStyle = gradient;
+            ctx.ellipse(startX + shadowLength/2, groundY + 5, shadowLength/2, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            const realShadowLen = (hReal * Math.tan(angleRad)).toFixed(2);
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillStyle = '#1B5E20';
+            ctx.textAlign = 'center';
+            ctx.fillText(`${realShadowLen} m`, startX + shadowLength/2, groundY + 30);
+
+            angleValDisplay.innerText = angleDeg;
+            heightValDisplay.innerText = hReal.toFixed(1);
+            shadowLenDisplay.innerText = realShadowLen;
+            statH.innerText = hReal.toFixed(1);
+            statTheta.innerText = angleDeg;
+
+            ctx.fillStyle = '#5D4037';
+            ctx.fillRect(startX - 5, groundY - hPixels, 10, hPixels);
+            
+            ctx.fillStyle = '#D32F2F';
+            ctx.beginPath();
+            ctx.moveTo(startX + 5, groundY - hPixels);
+            ctx.lineTo(startX + 35, groundY - hPixels + 12);
+            ctx.lineTo(startX + 5, groundY - hPixels + 24);
+            ctx.fill();
+
+            const sourceDistance = 350;
+            const sunX = startX + (sourceDistance * Math.cos(angleDeg * Math.PI / 180));
+            const sunY = groundY - (sourceDistance * Math.sin(angleDeg * Math.PI / 180));
+            
+            const sunGrad = ctx.createRadialGradient(sunX, sunY, 5, sunX, sunY, 35);
+            sunGrad.addColorStop(0, '#FFF176');
+            sunGrad.addColorStop(1, 'rgba(255, 160, 0, 0)');
+            
+            ctx.fillStyle = sunGrad;
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 45, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.font = '40px serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('☀️', sunX, sunY + 15);
+            
+            ctx.beginPath();
+            ctx.strokeStyle = '#F57C00';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([2, 2]);
+            ctx.arc(startX + shadowLength, groundY, 45, Math.PI, Math.PI + (angleDeg * Math.PI / 180));
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.fillStyle = '#E65100';
+            ctx.fillText(`${angleDeg}°`, startX + shadowLength - 70, groundY - 15);
+        }
+
+        function recordData() {
+            const h = parseFloat(heightSlider.value).toFixed(1);
+            const theta = angleSlider.value;
+            const s = (h * Math.tan((90 - theta) * Math.PI / 180)).toFixed(2);
+            
+            trialData.push({ h, theta, s });
+            updateTable();
+        }
+
+        function updateTable() {
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = '';
+            
+            trialData.forEach((item, index) => {
+                const row = `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-3 border text-center font-bold text-slate-500">${index + 1}</td>
+                        <td class="p-3 border text-center">${item.h} m</td>
+                        <td class="p-3 border text-center">${item.theta}°</td>
+                        <td class="p-3 border text-center font-bold text-blue-600">${item.s} m</td>
+                        <td class="p-3 border text-center">
+                            <button onclick="removeData(${index})" class="text-red-400 hover:text-red-600">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.insertAdjacentHTML('beforeend', row);
+            });
+            
+            if (trialData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 italic font-light italic">Belum ada data. Klik ikon (+) pada kontrol untuk mencatat data.</td></tr>`;
+            }
+        }
+
+        function removeData(index) {
+            trialData.splice(index, 1);
+            updateTable();
+        }
+
+        function clearTable() {
+            if(confirm("Hapus semua data pengamatan?")) {
+                trialData = [];
+                updateTable();
+            }
+        }
+
+        async function submitWork() {
+            const name = document.getElementById('student-name').value.trim();
+            const s_class = document.getElementById('student-class').value.trim();
+            const school = document.getElementById('student-school').value.trim();
+            const q1 = document.getElementById('q1').value.trim();
+            const q2 = document.getElementById('q2').value.trim();
+            const ai = document.getElementById('ai-summary').value.trim();
+            const final = document.getElementById('final-conclusion').value.trim();
+            
+            if (!name || !s_class || !school || !q1 || !q2 || !ai || !final) {
+                alert("Mohon lengkapi identitas diri dan semua form kesimpulan!");
+                return;
+            }
+            
+            if (trialData.length < 1) {
+                alert("Harap masukkan setidaknya 1 data pengamatan ke dalam tabel!");
+                return;
+            }
+
+            const btn = document.getElementById('submit-btn');
+            const success = document.getElementById('success-message');
+
+            const payload = {
+                student_name: name,
+                student_class: s_class,
+                student_school: school,
+                q1: q1,
+                q2: q2,
+                ai_summary: ai,
+                final_conclusion: final,
+                trials: trialData
+            };
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengirim data...';
             btn.disabled = true;
-            spinner.style.display = 'block';
-            status.textContent = "Sedang mengirim data...";
-            status.className = "mb-4 font-bold text-sm text-blue-600";
 
-            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-                .then(response => {
-                    status.textContent = "Berhasil! Data telah tersimpan di Google Sheets.";
-                    status.className = "mb-4 font-bold text-sm text-green-600";
-                    btn.disabled = false;
-                    spinner.style.display = 'none';
-                    alert("Terima kasih! Data sudah terkirim.");
-                })
-                .catch(error => {
-                    status.textContent = "Gagal Mengirim! Silakan periksa koneksi.";
-                    status.className = "mb-4 font-bold text-sm text-red-600";
-                    btn.disabled = false;
-                    spinner.style.display = 'none';
+            try {
+                // Menggunakan mode no-cors untuk interaksi Google Script POST sederhana
+                await fetch(SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "text/plain",
+                    },
+                    body: JSON.stringify(payload)
                 });
-        });
+
+                // Tampilan sukses
+                btn.style.display = 'none';
+                success.style.display = 'flex';
+                success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } catch (error) {
+                console.error("Submit error:", error);
+                alert("Terjadi kesalahan jaringan saat mengirim data. Silakan coba lagi.");
+                btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> Kirim Semua Jawaban';
+                btn.disabled = false;
+            }
+        }
+
+        angleSlider.oninput = drawScene;
+        heightSlider.oninput = drawScene;
+        window.onload = () => {
+            drawScene();
+            updateTable();
+        };
     </script>
 </body>
 </html>
